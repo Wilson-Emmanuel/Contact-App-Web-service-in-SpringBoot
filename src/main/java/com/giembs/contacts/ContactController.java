@@ -1,51 +1,52 @@
 package com.giembs.contacts;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
-@RestController
+@Validated
+@RestController(value = "api/v1/contacts")
 public class ContactController {
 
-    private HttpHeaders headers;
 
-    @Autowired
     private ContactService contactService;
 
-    @GetMapping("api/v1/contacts")
-    public ResponseEntity<Contact> getAllContact(){
-        headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin","*");
-        headers.add("Content-Type", "application/json");
-        return new ResponseEntity(contactService.getAllContact(), headers, HttpStatus.OK);
+    public ContactController(ContactService contactService){
+        this.contactService = contactService;
     }
 
-    @GetMapping("api/v1/contacts/{id}")
-    public Contact getContact(@PathVariable("id") Long id){
-        return contactService.getContact(id);
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<APIResponseJSON<List<ContactResponse>>> getAllContact(){
+        List<ContactResponse> contactResponses = contactService.getAllContact();
+        return new ResponseEntity<>(new APIResponseJSON<>("Successfully retrieved",contactResponses),HttpStatus.OK);
     }
 
-    @PostMapping("api/v1/contacts")
-    public  ResponseEntity<Contact> saveContact(@RequestBody Contact contact){
-        headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "*");
-        headers.add("Content-Type", "application/json");
+    @GetMapping("/{id}")
+    public ResponseEntity<APIResponseJSON<ContactResponse>> getContact(@PathVariable("id") Long id){
+        ContactResponse contactResponse = contactService.getContact(id);
+        return new ResponseEntity<>(new APIResponseJSON<>("Successfully retrieved",contactResponse),HttpStatus.OK);
+    }
+
+    @PostMapping(value = "",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<APIResponseJSON<ContactResponse>> saveContact(@RequestBody @Valid ContactJSON contactJSON){
         System.out.println("Accessing the post method");
-        return new ResponseEntity(contactService.saveContact(contact),headers, HttpStatus.OK);
+        ContactResponse contactResponse = contactService.saveContact(contactJSON.getRequest());
+        return new ResponseEntity<>(new APIResponseJSON<>("Successfully inserted",contactResponse), HttpStatus.OK);
     }
 
-    @DeleteMapping("api/v1/contacts/{id}")
-    public String saveContact(@PathVariable("id") Long id){
-        return contactService.deleteContact(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<APIResponseJSON<String>> saveContact(@PathVariable("id") Long id) {
+        contactService.deleteContact(id);
+        return ResponseEntity.ok(new APIResponseJSON<>("ContactEntity deleted successfully!"));
     }
 
-    @PutMapping("api/v1/contacts/{id}")
-    public  Contact updateContact(@PathVariable("id") Long id, @RequestBody Contact contact){
-        return contactService.updateContact(id, contact);
+    @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<APIResponseJSON<ContactResponse>> updateContact(@PathVariable("id") Long id, @RequestBody @Valid ContactJSON contactJSON ){
+        ContactResponse contactResponse = contactService.updateContact(id,contactJSON.getRequest());
+        return new ResponseEntity<>(new APIResponseJSON<>("Successfully updated",contactResponse),HttpStatus.OK);
     }
 
 }

@@ -12,7 +12,7 @@
 	<artifactId>Contacts</artifactId>
 	<version>1.0</version>
 	<name>Contacts</name>
-	<description>A Spring Boot application to store and management the contact addresses of my developers connection</description>
+	<description>A Spring Boot application to store and management the contactEntity addresses of my developers connection</description>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
@@ -39,6 +39,15 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>6.1.2.Final</version>
+		</dependency>
+		<dependency><groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator-annotation-processor</artifactId>
+			<version>6.1.2.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

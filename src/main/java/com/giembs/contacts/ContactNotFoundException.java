@@ -1,6 +1,6 @@
 package com.giembs.contacts;
 
-public class ContactNotFoundException extends Exception{
+public class ContactNotFoundException extends RuntimeException{
     public ContactNotFoundException() {
         super();
     }

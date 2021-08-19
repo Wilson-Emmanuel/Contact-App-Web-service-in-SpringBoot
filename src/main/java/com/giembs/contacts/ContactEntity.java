@@ -1,11 +1,10 @@
 package com.giembs.contacts;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -13,11 +12,12 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
-public class Contact {
+@Table(name = "contacts")
+public class ContactEntity {
     @Id
-    @SequenceGenerator(name="contact_sequence", sequenceName = "contact_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_sequence")
+    //@SequenceGenerator(name="contact_sequence", sequenceName = "contact_sequence", allocationSize = 1)
+    @GeneratedValue//(strategy = GenerationType.SEQUENCE, generator = "contact_sequence")
+    @Column(nullable = false,unique = true)
     private Long id;
 
     @Column(nullable = false)
@@ -32,12 +32,14 @@ public class Contact {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = false)
-    private Date date;
+    //@Column(insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = false)
+    //private Date date;
+    @Column
+    private Instant date;
 
     @Override
     public String toString() {
-        return "Contact{" +
+        return "ContactEntity{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
